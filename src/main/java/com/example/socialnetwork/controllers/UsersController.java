@@ -1,5 +1,6 @@
 package com.example.socialnetwork.controllers;
 
+import com.example.socialnetwork.DB.PostDB;
 import com.example.socialnetwork.DB.UsersDB;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,11 +51,57 @@ public class UsersController {
             Map<String, Object> map1 = getUsersPosts.get(i);
             map.put(userId+" id",map1);
 
-                newMap.put(i, map);
+            newMap.put(i, map);
             }
         return newMap;
     }
+
+
+    @GetMapping("/getPersonsInfo")
+    public Map<String,Object> getPersonsInfo(Integer id){
+
+        PostDB postDB = new PostDB();
+
+        Map<String, Object> post = postDB.getPost(id);
+        List<String> likes = postDB.getLikes(id);
+        List<Map<String, Object>> comments = postDB.getComments(id);
+
+
+        Map<String,Object>getInfo = new HashMap<>();
+
+        getInfo.put("post",post);
+        getInfo.put("likes",likes);
+        getInfo.put("comments",comments);
+
+
+        return getInfo;
+    }
 }
+
+//{
+//        "post": {
+//        "name": "Вася",
+//        "contento": "Hi",
+//        "date": "2023-02-23",
+//        "time": "15:37"
+//        },
+//        "likes": [
+//        "Вася",
+//        "Петя"
+//        ],
+//        "comments": [
+//        {
+//        "user_id": 1,
+//        "name": "Коля",
+//        "text": "интересно"
+//        },
+//        {
+//        "user_id": 2,
+//        "name": "Петя",
+//        "text": "Ок"
+//        }
+//        ]
+//        }
 //     if (getUsersPosts.get(i).containsKey(i)){
 //             Set<String> key1 = getUsersPosts.get(i).keySet();
 //        String value1 = getUsersPosts.get(i).values().toString();
