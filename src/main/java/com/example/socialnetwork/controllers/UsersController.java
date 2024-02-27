@@ -2,7 +2,12 @@ package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.DB.PostDB;
 import com.example.socialnetwork.DB.UsersDB;
+import com.example.socialnetwork.models.Users;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
@@ -76,34 +81,16 @@ public class UsersController {
 
         return getInfo;
     }
+
+
+    @PostMapping("/users")
+    public ResponseEntity<String>addUsers(@RequestBody Users users){
+
+        UsersDB usersDB = new UsersDB();
+        usersDB.addUsers(users.getName(),users.getSurname(),users.getUrl(),users.getPremium());
+
+        return new ResponseEntity<>("very good",HttpStatus.OK);
+    }
+
 }
 
-//{
-//        "post": {
-//        "name": "Вася",
-//        "contento": "Hi",
-//        "date": "2023-02-23",
-//        "time": "15:37"
-//        },
-//        "likes": [
-//        "Вася",
-//        "Петя"
-//        ],
-//        "comments": [
-//        {
-//        "user_id": 1,
-//        "name": "Коля",
-//        "text": "интересно"
-//        },
-//        {
-//        "user_id": 2,
-//        "name": "Петя",
-//        "text": "Ок"
-//        }
-//        ]
-//        }
-//     if (getUsersPosts.get(i).containsKey(i)){
-//             Set<String> key1 = getUsersPosts.get(i).keySet();
-//        String value1 = getUsersPosts.get(i).values().toString();
-//        map.put(key1.toString(),value1);
-//newcom

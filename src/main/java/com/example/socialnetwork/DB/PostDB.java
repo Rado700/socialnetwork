@@ -1,10 +1,8 @@
 package com.example.socialnetwork.DB;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.*;
 import java.util.*;
+import java.sql.Date;
 
 public class PostDB {
 
@@ -115,5 +113,24 @@ public class PostDB {
         }
 
         return commentAdd;
+    }
+    public void addPosts(String contento, Date date, Time time, int users_id){
+
+        try {
+            String add = "INSERT INTO post (contento,date,time,users_id) " +
+                    "VALUES (?,?,?,?)";
+
+            var stm = connection.prepareStatement(add, Statement.RETURN_GENERATED_KEYS);
+
+            stm.setString(1,contento);
+            stm.setDate(2,date);
+            stm.setTime(3,time);
+            stm.setInt(4,users_id);
+
+            int refresh = stm.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

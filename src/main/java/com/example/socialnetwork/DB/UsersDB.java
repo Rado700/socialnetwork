@@ -1,5 +1,7 @@
 package com.example.socialnetwork.DB;
 
+import org.springframework.http.ResponseEntity;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,46 +96,26 @@ public class UsersDB {
         }
         return newObject;
     }
-
-    public Map<Object,Map<List<String>,Map<Object,Object>>>getUsersInfo ( int id){
-
-        Map<Object,Map<List<String>,Map<Object,Object>>> neost = new HashMap<>();
+    public void addUsers(String name, String surname, String url, Boolean premium){
 
         try {
-            String getInfo = "SELECT name_post.name as post_name, contento,date,time,user_like.name as user_like,commentarie.user_id as commentId,user_comment.name as commentName,text FROM likes" +
-                    "INNER JOIN post on likes.post_id=post.id" +
-                    "INNER JOIN users name_post on post.users_id=name_post.id" +
-                    "INNER JOIN users user_like on likes.user_id=user_like.id" +
-                    "INNER JOIN commentarie on post.id=commentarie.post_id" +
-                    "INNER JOIN users user_comment on commentarie.user_id=user_comment.id" +
-                    "WHERE post.id ="+id;
+            String add = "INSERT INTO users (name,surname,url,premium)" +
+                    "VALUES (?,?,?,?)";
 
-            var stmn = connection.createStatement();
-            var stmnt = stmn.executeQuery(getInfo);
+            var stm =connection.prepareStatement(add,Statement.RETURN_GENERATED_KEYS);
 
-            while (stmnt.next()){
+            stm.setString(1,name);
+            stm.setString(2,surname);
+            stm.setString(3,url);
+            stm.setBoolean(4,premium);
 
-
-                String name_post = stmnt.getString("post_name");
-                String contento = stmnt.getString("contento");
-                Date date = stmnt.getDate("date");
-                Time time = stmnt.getTime("time");
-                String user_like = stmnt.getString("user_like");
-                Integer commentId = stmnt.getInt("commentId");
-                String commentName = stmnt.getString("commentName");
-                String text = stmnt.getString("text");
-
-
-
-            }
-
+            int refresh = stm.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-
-        return null;
     }
+
 
 }
