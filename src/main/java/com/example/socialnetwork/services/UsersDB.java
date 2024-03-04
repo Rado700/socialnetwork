@@ -1,6 +1,4 @@
-package com.example.socialnetwork.DB;
-
-import org.springframework.http.ResponseEntity;
+package com.example.socialnetwork.services;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -32,7 +30,6 @@ public class UsersDB {
 
         try {
 
-
            String user = "SELECT name,surname,url,premium FROM users";
 
            var stms = connection.createStatement();
@@ -60,6 +57,35 @@ public class UsersDB {
 
     }
 
+    public Map<String,Object>getUser(int id){
+
+        Map<String,Object>newUser = new HashMap<>();
+
+        try {
+            String user = "SELECT name,surname,url,premium FROM users WHERE id= "+id;
+
+            var stms = connection.createStatement();
+            var sttm = stms.executeQuery(user);
+
+            while (sttm.next()){
+                String name = sttm.getString("name");
+                String surname = sttm.getString("surname");
+                String url = sttm.getString("url");
+                Boolean premium = sttm.getBoolean("premium");
+
+                newUser.put("name",name);
+                newUser.put("surname",surname);
+                newUser.put("url",url);
+                newUser.put("premium",premium);
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return newUser;
+    }
+
     public List<Map<String, Object>> getUsersPost (Integer userId){
 
         List<Map<String,Object>> newObject = new ArrayList<>();
@@ -70,7 +96,7 @@ public class UsersDB {
                     "INNER JOIN post on users.id=post.users_id " +
                     "WHERE users.id=" + userId;
 
-            var sttm = connection.createStatement();
+            var sttm= connection.createStatement();
             var stt = sttm.executeQuery(post);
 
             while (stt.next()){

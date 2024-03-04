@@ -1,4 +1,4 @@
-package com.example.socialnetwork.DB;
+package com.example.socialnetwork.services;
 
 import java.io.IOException;
 import java.io.InputStream;

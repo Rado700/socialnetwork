@@ -1,4 +1,4 @@
-package com.example.socialnetwork.models;
+package com.example.socialnetwork.dto;
 
 import java.sql.Date;
 import java.sql.Time;
