@@ -1,15 +1,14 @@
 package com.example.socialnetwork.controllers;
 
+import com.example.socialnetwork.dto.LikeIdPostDto;
+import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Users;
 import com.example.socialnetwork.services.UserService;
 import com.example.socialnetwork.services.UsersDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -17,6 +16,17 @@ import java.util.*;
 public class UsersController {
     @Autowired
     UserService userService;
+    @GetMapping("/user/likes/{userId}")
+    public ResponseEntity<List<LikeIdPostDto>> likes (@PathVariable Integer userId){
+        Set<Likes> likes = userService.getUserLikes(userId);
+        List<LikeIdPostDto> likesDtoList = new ArrayList<>();
+
+        for (Likes like : likes){
+            likesDtoList.add(new LikeIdPostDto(like.getId(),like.getPost()));
+        }
+        return new ResponseEntity<>(likesDtoList,HttpStatus.OK);
+    }
+
     @GetMapping("/users")
     public ResponseEntity<List<Users>> name() {
         List<Users> users = userService.getUsers();
