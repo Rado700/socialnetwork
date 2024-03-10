@@ -1,5 +1,6 @@
 package com.example.socialnetwork.services;
 
+import com.example.socialnetwork.models.Commentarie;
 import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Post;
 import com.example.socialnetwork.models.Users;
@@ -22,10 +23,7 @@ public class UserService {
     @Autowired
     LikeRepository likeRepository;
 
-    public List<Users> getUsers(){
-        return userRepository.findAll();
-    }
-
+    public List<Users> getUsers(){return userRepository.findAll();}
     public List<Post>getPosts(){
         return postRepository.findAll();
     }
@@ -38,6 +36,14 @@ public class UserService {
         if (user.isPresent()){
             return user.get().getLikes();
         } else {
+            return null;
+        }
+    }
+    public Set<Commentarie> getPostComment(Integer id){
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isPresent()){
+            return post.get().getComment();
+        }else{
             return null;
         }
     }

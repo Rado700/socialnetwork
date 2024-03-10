@@ -20,7 +20,6 @@ public class PostController {
     UserService userService;
 
     @GetMapping("/post")
-
     public ResponseEntity<List<Post>> post(){
         List<Post>posts = userService.getPosts();
         return new  ResponseEntity<>(posts,HttpStatus.OK);
@@ -79,6 +78,23 @@ public class PostController {
         postDB.deleteLike(likes.getUser_id(), likes.getPost_id());
 
         return new ResponseEntity<>(like,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteComment")
+    public ResponseEntity<Object>deleteComment(@RequestBody Comment comment){
+        PostDB postDB = new PostDB();
+
+        boolean isCommentExist = postDB.isCommentExist(comment.getUser_id(),comment.getPost_id());
+
+        if (!isCommentExist){
+            return new ResponseEntity<>("Комментария не существует",HttpStatus.BAD_REQUEST);
+        }
+        postDB.deleteComment(comment.getUser_id(),comment.getPost_id());
+
+        List<Map<String,Object>> delete = postDB.getComments(comment.getUser_id());
+
+        return new ResponseEntity<>(delete,HttpStatus.OK);
+
     }
 
 }

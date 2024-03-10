@@ -122,6 +122,23 @@ public class PostDB {
             throw new RuntimeException(e);
         }
     }
+    public boolean isCommentExist(int user_id, int post_id){
+        try {
+            String comment = "SELECT * FROM commentarie " +
+                    "WHERE user_id = "+user_id+" AND post_id = "+post_id;
+
+            var stmn = connection.createStatement();
+            var sttm = stmn.executeQuery(comment);
+
+            while (sttm.next()){
+                return true;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
     public boolean isLikeExist(int user_id, int post_id) {
         try {
@@ -147,7 +164,7 @@ public class PostDB {
 
     public void addLike(int user_id, int post_id) {
         try {
-            String newAdd = "INSERT INTO likes(user_id,post_id)" +
+            String newAdd = "INSERT INTO likes(user_id,post_id) " +
                     "VALUES (?,?)";
 
             var stmn = connection.prepareStatement(newAdd, Statement.RETURN_GENERATED_KEYS);
@@ -198,5 +215,19 @@ public class PostDB {
             throw new RuntimeException(e);
         }
 
+    }
+    public void deleteComment(int user_id,int post_id){
+        try {
+
+            String delCom = "DELETE FROM commentarie WHERE user_id = ? AND post_id = ? ";
+
+            var stm = connection.prepareStatement(delCom);
+
+            stm.setInt(1,user_id);
+            stm.setInt(2,post_id);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

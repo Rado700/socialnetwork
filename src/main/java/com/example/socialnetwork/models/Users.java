@@ -21,9 +21,9 @@ public class Users {
     private String surname;
     private String url;
     private Boolean premium;
-
     @OneToMany(mappedBy = "users")
     private Set<Likes> likes = new HashSet<>();
+
 
     public Integer getId() {
         return id;

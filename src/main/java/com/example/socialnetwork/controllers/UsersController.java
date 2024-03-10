@@ -1,6 +1,8 @@
 package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.dto.LikeIdPostDto;
+import com.example.socialnetwork.dto.PostIdComment;
+import com.example.socialnetwork.models.Commentarie;
 import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Users;
 import com.example.socialnetwork.services.UserService;
@@ -16,6 +18,19 @@ import java.util.*;
 public class UsersController {
     @Autowired
     UserService userService;
+
+    @GetMapping("/user/comments/{id}")
+    public ResponseEntity<List<PostIdComment>> posts (@PathVariable Integer id){
+        Set<Commentarie> comment = userService.getPostComment(id);
+        List<PostIdComment> postIdComments = new ArrayList<>();
+        for (Commentarie comments : comment) {
+            postIdComments.add(new PostIdComment(comments.getId(),comments.getPost()));
+        }
+        return new ResponseEntity<>(postIdComments,HttpStatus.OK);
+
+    }
+
+
     @GetMapping("/user/likes/{userId}")
     public ResponseEntity<List<LikeIdPostDto>> likes (@PathVariable Integer userId){
         Set<Likes> likes = userService.getUserLikes(userId);
