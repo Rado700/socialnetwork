@@ -1,5 +1,6 @@
 package com.example.socialnetwork.controllers;
 
+import com.example.socialnetwork.models.Commentarie;
 import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Post;
 import com.example.socialnetwork.services.PostDB;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +25,12 @@ public class PostController {
     public ResponseEntity<List<Post>> post(){
         List<Post>posts = userService.getPosts();
         return new  ResponseEntity<>(posts,HttpStatus.OK);
+    }
 
+    @GetMapping("/commentarie")
+    public ResponseEntity<List<Commentarie>>getCommentarie(){
+        List<Commentarie> commentaries = userService.getComment();
+        return new ResponseEntity<>(commentaries,HttpStatus.OK);
     }
 //    @PostMapping("/posts")
 //    public ResponseEntity<String>addPosts(@RequestBody Post post){

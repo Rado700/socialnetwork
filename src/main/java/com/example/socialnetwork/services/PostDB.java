@@ -133,11 +133,12 @@ public class PostDB {
             while (sttm.next()){
                 return true;
             }
+            return false;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
+
     }
 
     public boolean isLikeExist(int user_id, int post_id) {
@@ -225,6 +226,8 @@ public class PostDB {
 
             stm.setInt(1,user_id);
             stm.setInt(2,post_id);
+
+            int refresh = stm.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

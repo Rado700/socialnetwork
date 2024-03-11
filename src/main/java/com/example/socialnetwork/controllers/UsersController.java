@@ -19,9 +19,9 @@ public class UsersController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/user/comments/{id}")
-    public ResponseEntity<List<PostIdComment>> posts (@PathVariable Integer id){
-        Set<Commentarie> comment = userService.getPostComment(id);
+    @GetMapping("/user/comments/{post_id}")
+    public ResponseEntity<List<PostIdComment>> posts (@PathVariable Integer post_id){
+        Set<Commentarie> comment = userService.getPostComment(post_id);
         List<PostIdComment> postIdComments = new ArrayList<>();
         for (Commentarie comments : comment) {
             postIdComments.add(new PostIdComment(comments.getId(),comments.getPost()));

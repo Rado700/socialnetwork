@@ -4,6 +4,7 @@ import com.example.socialnetwork.models.Commentarie;
 import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Post;
 import com.example.socialnetwork.models.Users;
+import com.example.socialnetwork.repository.CommentRepository;
 import com.example.socialnetwork.repository.LikeRepository;
 import com.example.socialnetwork.repository.PostRepository;
 import com.example.socialnetwork.repository.UserRepository;
@@ -22,6 +23,8 @@ public class UserService {
     PostRepository postRepository;
     @Autowired
     LikeRepository likeRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     public List<Users> getUsers(){return userRepository.findAll();}
     public List<Post>getPosts(){
@@ -29,6 +32,9 @@ public class UserService {
     }
     public List<Likes>getLikes(){
         return likeRepository.findAll();
+    }
+    public List<Commentarie>getComment(){
+        return commentRepository.findAll();
     }
 
     public Set<Likes> getUserLikes(Integer userId){
