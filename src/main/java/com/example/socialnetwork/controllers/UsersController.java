@@ -24,7 +24,7 @@ public class UsersController {
         Set<Commentarie> comment = userService.getPostComment(post_id);
         List<PostIdComment> postIdComments = new ArrayList<>();
         for (Commentarie comments : comment) {
-            postIdComments.add(new PostIdComment(comments.getId(),comments.getPost()));
+            postIdComments.add(new PostIdComment(comments.getId(),comments.getPost(),comments.getText()));
         }
         return new ResponseEntity<>(postIdComments,HttpStatus.OK);
 

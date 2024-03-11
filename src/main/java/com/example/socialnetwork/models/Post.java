@@ -1,5 +1,6 @@
 package com.example.socialnetwork.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -18,11 +19,12 @@ public class Post {
     private Date date;
     private Time time;
 
-   @OneToMany(mappedBy = "post")
-   private Set<Likes>likes = new HashSet<>();
-
-   @OneToMany(mappedBy = "post")
-   private Set<Commentarie>comment =new HashSet<>();
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post")
+    private Set<Likes> likes = new HashSet<>();
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post")
+    private Set<Commentarie> comment = new HashSet<>();
 
     public Set<Commentarie> getComment() {
         return comment;

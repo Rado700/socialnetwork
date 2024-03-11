@@ -1,5 +1,6 @@
 package com.example.socialnetwork.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,11 +8,11 @@ public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;

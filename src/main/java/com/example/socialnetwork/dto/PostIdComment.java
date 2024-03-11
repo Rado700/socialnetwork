@@ -8,9 +8,12 @@ public class PostIdComment {
 
     private Post post;
 
-    public PostIdComment(Integer id, Post post) {
+    private String comment;
+
+    public PostIdComment(Integer id, Post post, String comment) {
         this.id = id;
         this.post = post;
+        this.comment = comment;
     }
 
     public Integer getId() {
@@ -23,6 +26,14 @@ public class PostIdComment {
 
     public Post getPost() {
         return post;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public void setPost(Post post) {

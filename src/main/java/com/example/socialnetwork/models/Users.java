@@ -1,6 +1,7 @@
 package com.example.socialnetwork.models;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class Users {
     private String surname;
     private String url;
     private Boolean premium;
+    @JsonManagedReference
     @OneToMany(mappedBy = "users")
     private Set<Likes> likes = new HashSet<>();
 
