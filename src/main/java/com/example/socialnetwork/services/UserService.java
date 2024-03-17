@@ -4,10 +4,8 @@ import com.example.socialnetwork.models.Commentarie;
 import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Post;
 import com.example.socialnetwork.models.Users;
-import com.example.socialnetwork.repository.CommentRepository;
-import com.example.socialnetwork.repository.LikeRepository;
-import com.example.socialnetwork.repository.PostRepository;
 import com.example.socialnetwork.repository.UserRepository;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,39 +17,36 @@ import java.util.Set;
 public class UserService {
     @Autowired
     UserRepository userRepository ;
-    @Autowired
-    PostRepository postRepository;
-    @Autowired
-    LikeRepository likeRepository;
-    @Autowired
-    CommentRepository commentRepository;
 
-    public List<Users> getUsers(){return userRepository.findAll();}
-    public List<Post>getPosts(){
-        return postRepository.findAll();
+    public List<Users> getUsers(){
+        return userRepository.findAll();}
+
+    public Users getUser(Integer user_id){
+        return userRepository.findById(user_id).orElse(null);
     }
-    public List<Likes>getLikes(){
-        return likeRepository.findAll();
+    public Users addUser(String name, String surname, String url, Boolean premium) throws PSQLException {
+        Users users = new Users(name,surname,url,premium);
+        return userRepository.save(users);
     }
-    public List<Commentarie>getComment(){
-        return commentRepository.findAll();
+    public Users deleteUser(Integer user_id){
+        Users user = getUser(user_id);
+        userRepository.delete(user);
+        return user;
     }
 
-    public Set<Likes> getUserLikes(Integer userId){
-        Optional<Users> user = userRepository.findById(userId);
-        if (user.isPresent()){
-            return user.get().getLikes();
-        } else {
-            return null;
-        }
+    public Set<Commentarie> getUserComment(Integer id){
+        Optional<Users> user = userRepository.findById(id);
+        return user.map(Users::getCommentaries).orElse(null);
     }
-    public Set<Commentarie> getPostComment(Integer id){
-        Optional<Post> post = postRepository.findById(id);
-        if (post.isPresent()){
-            return post.get().getComment();
-        }else{
-            return null;
-        }
+
+    public Set<Likes> getLikes(Integer id){
+        Optional<Users>like = userRepository.findById(id);
+        return like.map(Users::getLikes).orElse(null);
     }
+    public Set<Post>getUserPost(Integer id){
+        Optional<Users>users = userRepository.findById(id);
+        return users.map(Users::getPosts).orElse(null);
+    }
+
 
 }

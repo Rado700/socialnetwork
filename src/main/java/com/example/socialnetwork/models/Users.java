@@ -3,6 +3,8 @@ package com.example.socialnetwork.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,10 +13,11 @@ import java.util.Set;
 //@Getter
 //@Setter
 //@RequiredArgsConstructor
+//@NoArgsConstructor
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //Можно ли менять структуру уже в созданной таблице (отсюда)
@@ -26,6 +29,40 @@ public class Users {
     @OneToMany(mappedBy = "users")
     private Set<Likes> likes = new HashSet<>();
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "users")
+    private Set<Commentarie>commentaries = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "users")
+    private Set<Post>posts = new HashSet<>();
+
+    public Users() {
+
+    }
+
+    public Users(String name, String surname, String url, Boolean premium) {
+        this.name = name;
+        this.surname = surname;
+        this.url = url;
+        this.premium = premium;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Commentarie> getCommentaries() {
+        return commentaries;
+    }
+
+    public void setCommentaries(Set<Commentarie> commentaries) {
+        this.commentaries = commentaries;
+    }
 
     public Integer getId() {
         return id;

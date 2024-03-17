@@ -1,6 +1,6 @@
 package com.example.socialnetwork.dto;
 
-public class Users {
+public class UsersDTO {
     private String name;
     private String surname;
     private String url;

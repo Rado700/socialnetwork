@@ -1,23 +1,23 @@
 package com.example.socialnetwork.dto;
 
 import com.example.socialnetwork.models.Post;
+import com.example.socialnetwork.models.Users;
 
 public class LikeIdPostDto {
 
-    private int id;
+    private Users users;
     private Post post;
 
-    public LikeIdPostDto(int id, Post post_id) {
-        this.id = id;
-        this.post = post_id;
+    public LikeIdPostDto(Post post, Users users) {
     }
 
-    public int getId() {
-        return id;
+
+    public Users getUsers() {
+        return users;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public Post getPost() {
@@ -27,4 +27,5 @@ public class LikeIdPostDto {
     public void setPost(Post post) {
         this.post = post;
     }
+
 }

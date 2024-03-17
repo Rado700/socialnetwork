@@ -3,7 +3,7 @@ package com.example.socialnetwork.dto;
 import java.sql.Date;
 import java.sql.Time;
 
-public class Post {
+public class PostDTO {
     private String contento;
     private int users_id;
     private Date date;

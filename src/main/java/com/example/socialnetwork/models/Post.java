@@ -1,7 +1,9 @@
 package com.example.socialnetwork.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -9,13 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+//@NoArgsConstructor
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String contento;
-    private Integer users_id;
     private Date date;
     private Time time;
 
@@ -26,9 +28,27 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private Set<Commentarie> comment = new HashSet<>();
 
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private Users users;
+
+
+    public Post() {
+
+    }
+
     public Set<Commentarie> getComment() {
         return comment;
     }
+
+//    public Users getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Users users) {
+//        this.users = users;
+//    }
 
     public void setComment(Set<Commentarie> comment) {
         this.comment = comment;
@@ -56,14 +76,6 @@ public class Post {
 
     public void setContento(String contento) {
         this.contento = contento;
-    }
-
-    public Integer getUsers_id() {
-        return users_id;
-    }
-
-    public void setUsers_id(Integer users_id) {
-        this.users_id = users_id;
     }
 
     public Date getDate() {

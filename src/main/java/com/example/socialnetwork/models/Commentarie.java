@@ -2,12 +2,15 @@ package com.example.socialnetwork.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
+//@NoArgsConstructor
 public class Commentarie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @JsonBackReference
     @ManyToOne
@@ -17,8 +20,18 @@ public class Commentarie {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-
     private String text;
+
+
+    public Commentarie() {
+
+    }
+
+    public Commentarie(Users users, Post post, String text) {
+        this.users = users;
+        this.post = post;
+        this.text = text;
+    }
 
     public Integer getId() {
         return id;

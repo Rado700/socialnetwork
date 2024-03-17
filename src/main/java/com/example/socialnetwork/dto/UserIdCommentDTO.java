@@ -1,8 +1,9 @@
 package com.example.socialnetwork.dto;
 
 import com.example.socialnetwork.models.Post;
+import com.example.socialnetwork.models.Users;
 
-public class PostIdComment {
+public class UserIdCommentDTO {
 
     private Integer id;
 
@@ -10,11 +11,12 @@ public class PostIdComment {
 
     private String comment;
 
-    public PostIdComment(Integer id, Post post, String comment) {
+    public UserIdCommentDTO(Integer id, Post post, String comment) {
         this.id = id;
         this.post = post;
         this.comment = comment;
     }
+
 
     public Integer getId() {
         return id;

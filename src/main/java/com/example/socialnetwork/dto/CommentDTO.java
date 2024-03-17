@@ -1,6 +1,6 @@
 package com.example.socialnetwork.dto;
 
-public class Comment {
+public class CommentDTO {
 
     private int post_id;
     private int user_id;
