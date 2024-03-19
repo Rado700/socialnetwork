@@ -27,6 +27,15 @@ public class PostService {
     public List<Post>getPosts(Integer id){
         return Collections.singletonList(postRepository.findById(id).orElseThrow());
     }
+    public Post deletePosts(Integer id) throws Exception {
+        Post post = getPost(id);
+        if (post == null){
+            throw new Exception("такого поста нету");
+        }
+        postRepository.delete(post);
+        return post;
+
+    }
 
 //    public Set<Post> getUserPost(Integer id){
 //        Optional<Post> post = postRepository.findById(id);

@@ -28,8 +28,11 @@ public class UserService {
         Users users = new Users(name,surname,url,premium);
         return userRepository.save(users);
     }
-    public Users deleteUser(Integer user_id){
-        Users user = getUser(user_id);
+    public Users deleteUser(Integer id) throws Exception {
+        Users user = getUser(id);
+        if (user == null){
+            throw new Exception("нету такого пользователя");
+        }
         userRepository.delete(user);
         return user;
     }

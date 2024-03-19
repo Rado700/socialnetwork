@@ -7,10 +7,16 @@ import com.example.socialnetwork.models.Post;
 import com.example.socialnetwork.models.Users;
 import com.example.socialnetwork.services.*;
 import com.example.socialnetwork.dto.CommentDTO;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.servers.ServerVariable;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,7 +36,36 @@ import java.util.Map;
                 contact = @Contact(url = "http://gigantic-server.com", name = "Fred", email = "Fred@gigagantic-server.com")
         )
 )
+//@OpenAPIDefinition(
+//        info = @Info(
+//                title = "the title",
+//                version = "0.0",
+//                description = "My API",
+//                license = @License(name = "Apache 2.0", url = "http://foo.bar"),
+//                contact = @Contact(url = "http://gigantic-server.com", name = "Fred", email = "Fred@gigagantic-server.com")
+//        ),
+//        tags = {
+//                @Tag(name = "Tag 1", description = "desc 1", externalDocs = @ExternalDocumentation(description = "docs desc")),
+//                @Tag(name = "Tag 2", description = "desc 2", externalDocs = @ExternalDocumentation(description = "docs desc 2")),
+//                @Tag(name = "Tag 3")
+//        },
+//        externalDocs = @ExternalDocumentation(description = "definition docs desc"),
+//        security = {
+//                @SecurityRequirement(name = "req 1", scopes = {"a", "b"}),
+//                @SecurityRequirement(name = "req 2", scopes = {"b", "c"})
+//        },
+//        servers = {
+//                @Server(
+//                        description = "server 1",
+//                        url = "http://foo",
+//                        variables = {
+//                                @ServerVariable(name = "var1", description = "var 1", defaultValue = "1", allowableValues = {"1", "2"}),
+//                                @ServerVariable(name = "var2", description = "var 2", defaultValue = "1", allowableValues = {"1", "2"})
+//                        })
+//        }
+//)
 @RestController
+@Tag(name = "Post controller", description = "Вся информация о посте пользователя")
 public class PostController {
 
     @Autowired
@@ -42,17 +77,36 @@ public class PostController {
     @Autowired
     CommentService commentService;
 
+    @Operation(summary = "Возвращает все посты")
     @GetMapping("/posts")
     public ResponseEntity<List<Post>> post() {
-        //TODO:Вовращает все посты
+        /**
+         * Возвращает информацию о всех постах
+         */
         List<Post> posts = postService.getPosts();
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
+    @Operation(summary = "Возвращает пост пользователя по id")
     @GetMapping("/post/{id}")
     public ResponseEntity<List<Post>> userPost(Integer id) {
-        List<Post>post = postService.getPosts(id);
-        return new ResponseEntity<>(post,HttpStatus.OK);
+        /**
+         * возвращает пост пользователя по id
+         */
+        List<Post> post = postService.getPosts(id);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Удаляет пост по id")
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity<Object> deletePost(@PathVariable Integer id) {
+        try {
+            Post post = postService.deletePosts(id);
+            return new ResponseEntity<>(post,HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     //    @PostMapping("/posts")
@@ -62,16 +116,23 @@ public class PostController {
 //        return new ResponseEntity<>("Успешно", HttpStatus.OK);
 //    }
 //--------------------------------------------------------------------------------------------
+    @Operation(summary = "Возвращает все комментария")
     @GetMapping("/commentarie")
     public ResponseEntity<List<Commentarie>> getCommentarie() {
-        //TODO:Возвращает все коменнтарий
+        /**
+         * Возвращает все комментарий
+         */
         List<Commentarie> commentaries = commentService.getCommentaries();
         return new ResponseEntity<>(commentaries, HttpStatus.OK);
     }
 
+    @Operation(summary = "Добавляет комментарий", description = "после добавления комментария возваращает информацию о посте," +
+            "пользователе и текст комментария")
     @PostMapping("/commentarie")
     public ResponseEntity<Commentarie> addComment(@RequestBody CommentDTO comment) {
-        //TODO: после добавления возвращает Json с добавленным комментарием (id, user(полная инфа),post(полная инфа))
+        /**
+         * После добавления возвращает Json с добавленным комментарием(id, user(полная инфа),post(полная инфа))
+         */
         Users user = userService.getUser(comment.getUser_id());
         Post post = postService.getPost(comment.getPost_id());
         String text = comment.getText();
@@ -79,9 +140,12 @@ public class PostController {
         return new ResponseEntity<>(commentarie, HttpStatus.OK);
     }
 
+    @Operation(summary = "Удалает комментарий", description = "удалает коменнтарий по id и возвращает удаленный комментарий")
     @DeleteMapping("/commentarie/{commentId}")
     public ResponseEntity<Object> deleteComment(@PathVariable Integer commentId) {
-        //TODO: После удаления комментария возвращает json  с удаленным комментом
+        /**
+         * После удаления комментария возвращает Json с удаленным комментом
+         */
         try {
             Commentarie commentarie = commentService.deleteComment(commentId);
             return new ResponseEntity<>(commentarie, HttpStatus.OK);
@@ -92,16 +156,22 @@ public class PostController {
 
 //-------------------------------------------------------------------------------------------------
 
+    @Operation(summary = "Возвращает все лайки")
     @GetMapping("/likes")
     public ResponseEntity<List<Likes>> like() {
-        //TODO:Вовращает все лайки
+        /**
+         * Возвращает все лайки
+         */
         List<Likes> likes = likeService.getAllLikes();
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
+    @Operation(summary = "Добаляет лайк", description = "после добавления лайка возваращают полную информацию о посте и пользователе")
     @PostMapping("/likes")
     public ResponseEntity<Likes> addLikes(@RequestBody LikesDTO likes) {
-        //TODO: после добавления возвращать json с добавленным лайком (id, post(полная инфа), user(полная инфа)
+        /**
+         * После добавления возвращает json с добавленным лайком (id,post(полная инфа),user(полная инфа))
+         */
         Users user = userService.getUser(likes.getUser_id());
         Post post = postService.getPost(likes.getPost_id());
         Likes like = likeService.addLike(user, post);
@@ -116,22 +186,19 @@ public class PostController {
 //        return new ResponseEntity<>("like Добавлен",HttpStatus.OK);
     }
 
-//    @DeleteMapping("/likes")
-//    public ResponseEntity<Likes> deleteLikes(@RequestBody LikesDTO likesDTO) {
-//        //TODO:после удаления лайка возвращает json c удаленным лайком (user(полная инфа)post(полная инфа))
-//        Users user = userService.getUser(likesDTO.getUser_id());
-//        Post post = postService.getPost(likesDTO.getPost_id());
-//        Likes likes = new Likes(user, post);
-//        return new ResponseEntity<>(likes, HttpStatus.OK);
-//    }
 
+    @Operation(summary = "Удаление лайка по id", description = "после удаления возвращает полную информацию о пользователе и " +
+            "посте")
     @DeleteMapping("/likes/{likeId}")
-    public ResponseEntity<Object>deleteUserLike(@PathVariable Integer likeId){
+    public ResponseEntity<Object> deleteUserLike(@PathVariable Integer likeId) {
+        /**
+         * после удаления лайка возвращает json c удаленным лайком (user(полная инфа)post(полная инфа))
+         */
         try {
             Likes like = likeService.deleteLike(likeId);
-            return new ResponseEntity<>(like,HttpStatus.OK);
+            return new ResponseEntity<>(like, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
