@@ -1,31 +1,26 @@
 package com.example.socialnetwork.controllers;
 
 import com.example.socialnetwork.dto.LikesDTO;
+import com.example.socialnetwork.dto.PostDTO;
 import com.example.socialnetwork.models.Commentarie;
 import com.example.socialnetwork.models.Likes;
 import com.example.socialnetwork.models.Post;
 import com.example.socialnetwork.models.Users;
 import com.example.socialnetwork.services.*;
 import com.example.socialnetwork.dto.CommentDTO;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.servers.Server;
-import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -87,25 +82,32 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    @Operation(summary = "Возвращает пост пользователя по id")
-    @GetMapping("/post/{id}")
-    public ResponseEntity<List<Post>> userPost(Integer id) {
-        /**
-         * возвращает пост пользователя по id
-         */
-        List<Post> post = postService.getPosts(id);
-        return new ResponseEntity<>(post, HttpStatus.OK);
-    }
+//    @Operation(summary = "Возвращает пост пользователя по id")
+//    @GetMapping("/post/{id}")
+//    public ResponseEntity<Set<Post>> userPost(Integer id) {
+//        /**
+//         * возвращает пост пользователя по id
+//         */
+//        Set<Post> post = userService.getUserPost(id);
+//        return new ResponseEntity<>(post, HttpStatus.OK);
+//    }
 
     @Operation(summary = "Удаляет пост по id")
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<Object> deletePost(@PathVariable Integer id) {
-        try {
+    public ResponseEntity<Post> deletePost(@PathVariable Integer id) throws Exception {
+//        try {
             Post post = postService.deletePosts(id);
             return new ResponseEntity<>(post,HttpStatus.OK);
-        }catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
+//        }catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+//        }
+
+    }
+    @PostMapping("/post")
+    public ResponseEntity<Post>addPosts(@RequestBody PostDTO postDTO){
+        Users user = userService.getUser(postDTO.getUsers_id());
+        Post newPost = postService.addPost(postDTO.getContento(),postDTO.getDate(),postDTO.getTime(),user);
+        return new ResponseEntity<>(newPost, HttpStatus.OK);
 
     }
 

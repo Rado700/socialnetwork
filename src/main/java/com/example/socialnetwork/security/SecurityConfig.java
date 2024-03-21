@@ -33,7 +33,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.POST).authenticated()
-                .requestMatchers(HttpMethod.DELETE).authenticated()
+                .requestMatchers(HttpMethod.GET).authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .httpBasic();

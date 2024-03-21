@@ -3,7 +3,6 @@ package com.example.socialnetwork.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -22,16 +21,27 @@ public class Post {
     private Time time;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
     private Set<Likes> likes = new HashSet<>();
     @JsonManagedReference
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
     private Set<Commentarie> comment = new HashSet<>();
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "users_id")
     private Users users;
+
+
+
+    public Post(String contento, Date date, Time time, Users users) {
+        this.contento = contento;
+        this.date = date;
+        this.time = time;
+        this.users = users;
+
+    }
+
 
 
     public Post() {

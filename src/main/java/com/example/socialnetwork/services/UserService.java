@@ -1,9 +1,7 @@
 package com.example.socialnetwork.services;
 
-import com.example.socialnetwork.models.Commentarie;
-import com.example.socialnetwork.models.Likes;
-import com.example.socialnetwork.models.Post;
-import com.example.socialnetwork.models.Users;
+import com.example.socialnetwork.models.*;
+import com.example.socialnetwork.repository.AuthorizationRepository;
 import com.example.socialnetwork.repository.UserRepository;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,9 @@ import java.util.Set;
 public class UserService {
     @Autowired
     UserRepository userRepository ;
+
+    @Autowired
+    AuthorizationRepository authorizationRepository;
 
     public List<Users> getUsers(){
         return userRepository.findAll();}
@@ -50,6 +51,12 @@ public class UserService {
         Optional<Users>users = userRepository.findById(id);
         return users.map(Users::getPosts).orElse(null);
     }
+
+    public Users getUserByLoginPassword(String user,String password){
+        Authorisation authorisation = authorizationRepository.findByLoginAndPassword(user,password);
+        return authorisation.getUser();
+    }
+
 
 
 }

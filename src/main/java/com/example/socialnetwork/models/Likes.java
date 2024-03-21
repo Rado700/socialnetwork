@@ -11,11 +11,11 @@ public class Likes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private Users users;
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
 

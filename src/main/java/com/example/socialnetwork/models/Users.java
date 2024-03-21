@@ -1,10 +1,9 @@
 package com.example.socialnetwork.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,16 +25,25 @@ public class Users {
     private String url;
     private Boolean premium;
     @JsonManagedReference
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Likes> likes = new HashSet<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users",fetch = FetchType.EAGER)
     private Set<Commentarie>commentaries = new HashSet<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users",fetch = FetchType.EAGER)
     private Set<Post>posts = new HashSet<>();
+
+    @JsonBackReference
+    @OneToOne(mappedBy = "users",fetch = FetchType.EAGER)
+    private Authorisation authorisation;
+
+
+    @JsonBackReference
+    @OneToOne(mappedBy = "users",fetch = FetchType.EAGER)
+    private Registration registration;
 
     public Users() {
 
@@ -46,6 +54,14 @@ public class Users {
         this.surname = surname;
         this.url = url;
         this.premium = premium;
+    }
+
+    public Authorisation getAuthorisation() {
+        return authorisation;
+    }
+
+    public void setAuthorisation(Authorisation authorisation) {
+        this.authorisation = authorisation;
     }
 
     public Set<Post> getPosts() {
