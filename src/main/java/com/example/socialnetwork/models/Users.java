@@ -19,7 +19,6 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //Можно ли менять структуру уже в созданной таблице (отсюда)
     private String name;
     private String surname;
     private String url;
@@ -36,14 +35,14 @@ public class Users {
     @OneToMany(mappedBy = "users",fetch = FetchType.EAGER)
     private Set<Post>posts = new HashSet<>();
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "users",fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @OneToOne(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Authorisation authorisation;
 
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "users",fetch = FetchType.EAGER)
-    private Registration registration;
+//    @JsonBackReference
+//    @OneToOne(mappedBy = "users",fetch = FetchType.EAGER)
+//    private Registration registration;
 
     public Users() {
 

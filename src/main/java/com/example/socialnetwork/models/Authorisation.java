@@ -1,6 +1,7 @@
 package com.example.socialnetwork.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,20 +12,19 @@ public class Authorisation {
     private Integer id;
     private String login;
     private String password;
-    @JsonManagedReference
-    @OneToOne(mappedBy = "users")
-    private Users user;
+    @JsonBackReference
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "userid")
+    private Users users;
 
 
-    public Authorisation(Integer id, String login, String password, Users user) {
-        this.id = id;
+    public Authorisation(String login, String password, Users users) {
         this.login = login;
         this.password = password;
-        this.user = user;
+        this.users = users;
     }
 
     public Authorisation() {
-
     }
 
     public Integer getId() {
@@ -47,15 +47,15 @@ public class Authorisation {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword() {
         this.password = password;
     }
 
-    public Users getUser() {
-        return user;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 }

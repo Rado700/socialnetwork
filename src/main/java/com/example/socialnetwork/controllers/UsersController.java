@@ -1,17 +1,13 @@
 package com.example.socialnetwork.controllers;
 
-import com.example.socialnetwork.dto.LikeIdPostDto;
-import com.example.socialnetwork.dto.UserIdCommentDTO;
-import com.example.socialnetwork.dto.UserIdPostDTO;
-import com.example.socialnetwork.dto.UsersDTO;
-import com.example.socialnetwork.models.Commentarie;
-import com.example.socialnetwork.models.Likes;
-import com.example.socialnetwork.models.Post;
-import com.example.socialnetwork.models.Users;
+import com.example.socialnetwork.dto.*;
+import com.example.socialnetwork.models.*;
 import com.example.socialnetwork.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -37,7 +35,9 @@ public class UsersController {
     @Autowired
     PostService postService;
 
-    @Operation(summary = "Возвращает комментарий пользователя",description = "возвращает коменнтарий полтзователя по его id")
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Operation(summary = "Возвращает комментарий пользователя", description = "возвращает коменнтарий полтзователя по его id")
     @GetMapping("/user/comments/{user_id}")
     public ResponseEntity<List<UserIdCommentDTO>> posts(@PathVariable Integer user_id) {
         /**
@@ -116,7 +116,7 @@ public class UsersController {
         }
     }
 
-    @Operation(summary = "Возваращает информацию о посте пользователя",description = "Возвращает всю информацию о пользователе" +
+    @Operation(summary = "Возваращает информацию о посте пользователя", description = "Возвращает всю информацию о пользователе" +
             "и его посте по id")
     @GetMapping("/user/post/{user_id}")
     public ResponseEntity<UserIdPostDTO> getUsersPost(@PathVariable Integer user_id) {
@@ -128,20 +128,60 @@ public class UsersController {
         UserIdPostDTO userIdPostDTO = new UserIdPostDTO(post, user);
         return new ResponseEntity<>(userIdPostDTO, HttpStatus.OK);
     }
+
     @PostMapping("/login")
-    public ResponseEntity<Users>getLogin(String login, String password){
+    public ResponseEntity<Users> getLogin(@RequestBody AuthorisationDTO authorisation, HttpSession session) {
+        String login = authorisation.getLogin();
+        String password = authorisation.getPassword();
         Users user = userService.getUserByLoginPassword(login, password);
-        if (user == null){
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        Authentication authentication = new UsernamePasswordAuthenticationToken(login, password);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        session.setAttribute("user", user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PostMapping("/registration")
+    public ResponseEntity<Object> registration(@RequestBody RegistrationDTO registrationDTO, HttpSession session) {
+        Users users = userService.getUserByLoginPassword(registrationDTO.getLogin(),registrationDTO.getPassword());
+        if (users != null) {
+            return new ResponseEntity<>("conflict",HttpStatus.CONFLICT);
+        }
+        try {
+            Users addNewUser = userService.addUser(
+                    registrationDTO.getUsersDTO().getName(),
+                    registrationDTO.getUsersDTO().getSurname(),
+                    registrationDTO.getUsersDTO().getUrl(),
+                    registrationDTO.getUsersDTO().getPremium());
+//            String newPass = passwordEncoder.encode(registrationDTO.getPassword());
 
+            users = userService.addNewRegistry(registrationDTO.getLogin(), registrationDTO.getPassword(), addNewUser);
+            session.setAttribute("user",addNewUser);
 
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_GATEWAY);
+        }
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @GetMapping("/account")
+    public ResponseEntity<Authorisation> account(HttpSession session){
+        Users users = (Users) session.getAttribute("user");
+        if (users == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String login = users.getName();
+        System.out.println(login);
+        Authorisation authorisation = userService.getAccount(login);
+        return new ResponseEntity<>(authorisation,HttpStatus.OK);
+
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<Users>logout(HttpSession session){
+        session.setAttribute("user",null);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 //
 //        UsersDB usersDB = new UsersDB();
